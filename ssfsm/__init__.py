@@ -108,7 +108,10 @@ class FSM_Machine(object):
             for t in transition:
                 self.__change_state(self.__active_state(t))
         except TypeError:
-            self.__change_state(self.__active_state(transition))
+            try:
+                self.__change_state(self.__active_state(transition))
+            except TypeError:
+                raise ValueError('No State initialized. Set an initial state with Machine().reset(state).')
 
     def __change_state(self, state):
         if not self.state.parent is self:

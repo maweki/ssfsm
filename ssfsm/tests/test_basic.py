@@ -35,3 +35,10 @@ class TestBasicSyntax(TestCase):
         self.m.One = False
         self.assertFalse(self.m.One.accepting)
 
+    def test_no_init_gives_error(self):
+        m = self.m
+        m.One = True
+        m.One['a'] = m.One
+        self.assertRaises(ValueError, m, 'a')
+        m().reset(m.One)
+        m('a')
