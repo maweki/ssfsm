@@ -6,13 +6,12 @@
 ssfsm - Stupidly Simple Finite State Machine
 =================================
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
 
 .. automodule:: ssfsm
-
+    :members:
+    :undoc-members:
 
 Indices and tables
 ==================
