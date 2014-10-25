@@ -41,6 +41,9 @@ class FSM_Machine(object):
         self.__states[name] = new_state
         return new_state
 
+    def __eq__(self, other):
+        raise NotImplementedError()
+
     def __call__(self, transition=None):
         if transition == None:
             machine = self
