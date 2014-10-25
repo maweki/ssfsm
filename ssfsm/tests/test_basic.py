@@ -35,6 +35,12 @@ class TestBasicSyntax(TestCase):
         self.m.One = False
         self.assertFalse(self.m.One.accepting)
 
+    def test_state_deletable(self):
+        self.m.One = True
+        self.assertIn('One', self.m)
+        del self.m.One
+        self.assertNotIn('One', self.m)
+
     def test_no_init_gives_error(self):
         m = self.m
         m.One = True
