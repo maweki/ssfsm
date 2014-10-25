@@ -41,6 +41,26 @@ class FSM_Machine(object):
         self.__states[name] = new_state
         return new_state
 
+    def __deepcopy(self):
+        copy = FSM_Machine()
+        copy().alphabet = self.__alphabet
+        for key in self.__states:
+            copy[key] = self.__states[key].accepting
+            if self.__initial_state is self.__states[key]:
+                copy().reset(copy[key])
+            if self.__active_state is self.__states[key]:
+                copy().state = copy[key]
+        for key in self.__states:
+            for transition in self.__states[key].transitions:
+                copy[key][transition] = copy[self.__states[key][transition].name]
+        return copy
+
+    def __enter__(self):
+        return self.__deepcopy()
+
+    def __exit__(self, _type, value, traceback):
+        pass
+
     def __eq__(self, other):
         raise NotImplementedError()
 
@@ -69,6 +89,10 @@ class FSM_Machine(object):
                 @property
                 def state(self):
                     return machine._FSM_Machine__active_state
+
+                @state.setter
+                def state(self, state):
+                    machine._FSM_Machine__change_state(state)
 
                 def reset(self, initial_state=None):
                     if initial_state is None:
