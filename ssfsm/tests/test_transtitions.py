@@ -36,3 +36,12 @@ class TestTransitions(TestCase):
     def test_non_alphabet(self):
         self.assertRaises(KeyError, self.m, 'c')
         self.assertRaises(KeyError, self.m, 'cdefg')
+
+    def test_accepting(self):
+        m = self.m
+        m.Three = True
+        self.assertFalse(m)
+        m('aa')
+        self.assertFalse(m)
+        m('ab')
+        self.assertTrue(m)

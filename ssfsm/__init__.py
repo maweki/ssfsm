@@ -28,8 +28,11 @@ class FSM_Machine(object):
     def __len__(self):
         return len(self.__states)
 
+    def __nonzero__(self):
+        return bool(self.__active_state.accepting)
+
     def __bool__(self):
-        return self.__active_state.accepting
+        return bool(self.__active_state.accepting)
 
     def __create_state(self, name):
         if name in self:

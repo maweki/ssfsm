@@ -28,3 +28,10 @@ class TestBasicSyntax(TestCase):
 
     def test_machine_callable(self):
         self.m()
+
+    def test_state_accepting(self):
+        self.m.One = True
+        self.assertTrue(self.m.One.accepting)
+        self.m.One = False
+        self.assertFalse(self.m.One.accepting)
+
