@@ -55,6 +55,9 @@ class FSM_Machine(object):
                 copy[key][transition] = copy[self.__states[key][transition].name]
         return copy
 
+    def __deepcopy__(self, _):
+        return self.__deepcopy()
+
     def __enter__(self):
         return self.__deepcopy()
 
