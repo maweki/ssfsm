@@ -21,5 +21,6 @@ class TestEquality(TestCase):
         self.m2 = m
 
     def test_machine_equality(self):
-        self.assertEqual(self.m1, self.m1)
-        self.assertEqual(self.m1, self.m2)
+        with self.assertRaises(NotImplementedError):
+            self.assertEqual(self.m1, self.m1)
+            self.assertEqual(self.m1, self.m2)

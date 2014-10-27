@@ -37,6 +37,21 @@ class TestTransitions(TestCase):
         self.assertRaises(KeyError, self.m, 'c')
         self.assertRaises(KeyError, self.m, 'cdefg')
 
+    def test_error(self):
+        self.assertNotIn('c', self.m.One)
+        self.assertRaises(KeyError, self.m, 'c')
+
+    def test_delete_transition(self):
+        self.assertIn('b', self.m.One)
+        del self.m.One['b']
+        self.assertNotIn('b', self.m.One)
+
+    def test_delete_state(self):
+        self.assertIn('One', self.m)
+        self.assertIn('a', self.m.Two)
+        del self.m.One
+        self.assertNotIn('a', self.m.Two)
+
     def test_accepting(self):
         m = self.m
         m.Three = True

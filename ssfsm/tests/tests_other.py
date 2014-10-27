@@ -22,3 +22,23 @@ class TestWith(TestCase):
             self.assertIn(state.name, copy)
         for state in copy().states:
             self.assertIn(state.name, self.m)
+
+    def test_reset(self):
+        m = self.m
+        self.assertIs(m().state, m.One)
+        m('a')
+        self.assertIs(m().state, m.Two)
+        m().reset()
+        self.assertIs(m().state, m.One)
+        m().reset(m.Two)
+        self.assertIs(m().state, m.Two)
+        m('a')
+        self.assertIs(m().state, m.One)
+        with self.assertRaises(ValueError):
+            m().reset(ssfsm.Machine().s)
+
+    def test_str(self):
+        m = self.m
+        self.assertEqual(str(m.One), '<state.One>')
+        self.assertEqual(str(m['two']), '<state.two>')
+        self.assertEqual(str(m[1]), '<state.1>')

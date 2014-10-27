@@ -29,6 +29,15 @@ class TestBasicSyntax(TestCase):
     def test_machine_callable(self):
         self.m()
 
+    def test_machine_length(self):
+        self.assertEqual(0, len(self.m))
+        _ = self.m.One
+        self.assertEqual(1, len(self.m))
+        _ = self.m.Two
+        self.assertEqual(2, len(self.m))
+        del self.m.One
+        self.assertEqual(1, len(self.m))
+
     def test_state_accepting(self):
         self.m.One = True
         self.assertTrue(self.m.One.accepting)
@@ -40,6 +49,12 @@ class TestBasicSyntax(TestCase):
         self.assertIn('One', self.m)
         del self.m.One
         self.assertNotIn('One', self.m)
+
+    def test_states_in_different_machines(self):
+        m1 = ssfsm.Machine()
+        m2 = ssfsm.Machine()
+        with self.assertRaises(ValueError):
+            m1.One['a'] = m2.Two
 
     def test_no_init_gives_error(self):
         m = self.m
