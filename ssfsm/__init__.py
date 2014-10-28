@@ -239,3 +239,14 @@ class FSM_State(object):
 
     def __delitem__(self, key):
         del self.__following[key]
+
+
+def emmit(machine, transition):
+    def __emmit(func):
+        from functools import wraps
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            machine(transition)
+            return func(*args, **kwargs)
+        return wrapper
+    return __emmit
