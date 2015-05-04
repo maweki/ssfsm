@@ -20,9 +20,10 @@ A.One['a'] = A.Two
 A.One['b'] = A.One
 A.Two['ab'] = A.Two # a and b transition
 A.Two = True # Set state Two to accepting
+A().reset(A.One)
 ```
-The initial state is the first constructed state (A.One in this case).
-A different initial state can be set via `A().reset(A.Two)`.
+The initial state needs to be set with `A().reset(A.One)`.
+You can also create an initial state with the constructor like `A = ssfsm.Machine('One')`.
 
 States can be deleted with the **del** statement
 ```

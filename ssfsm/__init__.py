@@ -13,9 +13,11 @@ class FSM_Machine(object):
     __initial_state = None
     __alphabet = None
 
-    def __init__(self):
+    def __init__(self, initial_state=None):
         self.__states = {}
         self.__alphabet = frozenset()
+        if not (initial_state is None):
+            self().reset(self[initial_state])
 
     def __get_state(self, name):
         if name in self:
