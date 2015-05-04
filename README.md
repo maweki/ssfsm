@@ -115,6 +115,12 @@ If you want the transition to happen after the actual function
 call, you can use the decorator `emmit_after`. `emmit_before`
 is an alias for `emmit`.
 
+### Information about machines and states
+
+**If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.
+
+
+
 ### Programmatic quirks and implementation details
 
 States can be accessed via the dot-operator as `Machine.State`.

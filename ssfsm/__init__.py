@@ -151,6 +151,8 @@ class FSM_Machine(object):
         self.__active_state = state
 
     def __getitem__(self, key):
+        if key == '_':
+            return self()
         return self.__get_state(key)
 
     def __setitem__(self, key, value):

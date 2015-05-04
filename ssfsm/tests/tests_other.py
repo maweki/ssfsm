@@ -42,3 +42,9 @@ class TestWith(TestCase):
         self.assertEqual(str(m.One), '<state.One>')
         self.assertEqual(str(m['two']), '<state.two>')
         self.assertEqual(str(m[1]), '<state.1>')
+
+    def test_alternate_controller_syntax(self):
+        m = self.m
+        c1 = m._
+        c2 = m()
+        self.assertIs(c1.parent, c2.parent)
