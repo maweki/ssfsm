@@ -144,11 +144,13 @@ class FSM_Machine(object):
                 self.__change_state(self.__active_state(transition))
             except TypeError:
                 raise ValueError('No State initialized. Set an initial state with Machine().reset(state).')
+        return self().state
 
     def __change_state(self, state):
         if not self.state.parent is self:
             raise ValueError("States are not in the same machine")
         self.__active_state = state
+        return state
 
     def __getitem__(self, key):
         if key == '_':

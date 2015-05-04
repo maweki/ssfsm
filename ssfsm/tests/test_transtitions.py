@@ -33,6 +33,12 @@ class TestTransitions(TestCase):
         m('bbbbbbbbbbbbbbbbb')
         self.assertIs(m().state, m.Three)
 
+    def test_execution_order(self):
+        m = self.m
+        self.assertIs(m('a'), m().state)
+        m().reset(m.One)
+        self.assertIsNot(m().state, m('a'))
+
     def test_non_alphabet(self):
         self.assertRaises(KeyError, self.m, 'c')
         self.assertRaises(KeyError, self.m, 'cdefg')
@@ -60,3 +66,7 @@ class TestTransitions(TestCase):
         self.assertFalse(m)
         m('ab')
         self.assertTrue(m)
+
+    def test_returned_state(self):
+        m = self.m
+        self.assertIs(m('a'), m.Two)

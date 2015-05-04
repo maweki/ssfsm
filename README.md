@@ -40,6 +40,8 @@ A('a') # a-Transition
 A('ab') # a-Transition followed by b-Transition
 ```
 
+The current state after the last transition is returned. Because of the order of execution, `Machine('a') is Machine().state` is True (given the transition exists) while `Machine().state is Machine('a')` may not be.
+
 ### Accepting
 When cast to boolean, we see whether the FSM is in an accepting state
 or not.
@@ -158,6 +160,9 @@ States and transitions are kept in dictionaries, therefore a
 state-identifier as well as all transitions need to be hashable.
 
 Transitions are checked for iterability and if they are iterable, they are iterated over and the transitions are applied/created in order. Therefore `Machine.State[''] = Machine.OtherState` will not create a transition, neither will `Machine('')` apply a transition.
+
+`Machine()()`, is like an empty transition and therefore an
+alias to `Machine().state` or `Machine(())` or `Machine('')`
 
 ## Unit tests
 
