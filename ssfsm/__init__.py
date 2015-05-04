@@ -125,6 +125,14 @@ class FSM_Machine(object):
                             if d in state:
                                 del state[d]
 
+                @property
+                def transitions(self):
+                    def __transitions():
+                        for fro in self.states:
+                            for trans in fro.transitions:
+                                yield (fro, trans, fro[trans])
+                    return frozenset(__transitions())
+
                 def polyfill(self, target=None):
                     for state in self.states:
                         for transition in self.alphabet:

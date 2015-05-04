@@ -125,6 +125,8 @@ is an alias for `emmit`.
 
 `Machine().states` is the set of states
 
+`Machine().transitions` returns the set of transitions as a three-tuple of *(from, transition, to)* representing the state-transition function as a set.
+
 `Machine().alphabet` returns the set of transitions/the alphabet of the machine. *writable*
 
 **If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.
