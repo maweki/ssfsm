@@ -114,7 +114,7 @@ The transition happens before the function is called so
 that the function will observe the new state of the machine.
 
 If you want the transition to happen after the actual function
-call, you can use the decorator `emmit_after`. `emmit_before`
+call and observe the previous state, you can use the decorator `emmit_after`. `emmit_before`
 is an alias for `emmit`.
 
 ### Information about machines and states
