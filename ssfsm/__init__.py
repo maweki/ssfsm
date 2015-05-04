@@ -241,7 +241,7 @@ class FSM_State(object):
         del self.__following[key]
 
 
-def emmit(machine, transition):
+def emmit_before(machine, transition):
     def __emmit(func):
         from functools import wraps
         @wraps(func)
@@ -250,7 +250,7 @@ def emmit(machine, transition):
             return func(*args, **kwargs)
         return wrapper
     return __emmit
-emmit_before = emmit
+emmit = emmit_before
 
 def emmit_after(machine, transition):
     def __emmit(func):
