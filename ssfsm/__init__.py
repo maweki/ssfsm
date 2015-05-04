@@ -250,3 +250,15 @@ def emmit(machine, transition):
             return func(*args, **kwargs)
         return wrapper
     return __emmit
+emmit_before = emmit
+
+def emmit_after(machine, transition):
+    def __emmit(func):
+        from functools import wraps
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            tmp = func(*args, **kwargs)
+            machine(transition)
+            return tmp
+        return wrapper
+    return __emmit
