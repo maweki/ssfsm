@@ -70,13 +70,14 @@ class FSM_Machine(object):
         raise NotImplementedError()
 
     def __call__(self, transition=None):
-        if transition == None:
+        if transition is None:
             machine = self
             class FSM_Machine_Controller(object):
                 def __init__(self, parent):
                     self.parent = parent
 
                 def __call__(self):
+                    # @TODO Is this the expected behaviour?
                     return self.state
 
                 @property
@@ -240,7 +241,9 @@ class FSM_State(object):
         return '<state.%s>' % self.name
 
     def __setitem__(self, key, value):
-        if not value.parent is self.parent:
+        if not isinstance(value, FSM_State):
+            raise TypeError("Transition target must be a state")
+        elif not value.parent is self.parent:
             raise ValueError("States are not in the same machine")
         try:
             for v in key:

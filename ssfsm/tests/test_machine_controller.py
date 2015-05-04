@@ -17,6 +17,12 @@ class TestMachineController(TestCase):
         self.assertIn(state, self.m().states)
         self.assertIsInstance(state, ssfsm.FSM_State)
 
+    def test_controller_calling(self):
+        m = self.m
+        m().reset(m.One)
+        self.assertIs(m()(), m.One)
+        self.assertIs(m(()), m.One)
+
     def test_transitions(self):
         m = self.m
         self.assertEqual(m().transitions, frozenset())

@@ -62,11 +62,22 @@ class TestTransitions(TestCase):
         m = self.m
         m.Three = True
         self.assertFalse(m)
+        self.assertFalse(m().accepting)
         m('aa')
         self.assertFalse(m)
+        self.assertFalse(m().accepting)
         m('ab')
         self.assertTrue(m)
+        self.assertTrue(m().accepting)
 
     def test_returned_state(self):
         m = self.m
         self.assertIs(m('a'), m.Two)
+
+    def test_set_state(self):
+        m = self.m
+        self.assertIs(m().state, m.One)
+        m().state = m.Two
+        self.assertIs(m().state, m.Two)
+        with self.assertRaises(TypeError):
+            m.state = 'err'

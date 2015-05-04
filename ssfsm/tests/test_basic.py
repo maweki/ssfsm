@@ -43,18 +43,28 @@ class TestBasicSyntax(TestCase):
         self.assertTrue(self.m.One.accepting)
         self.m.One = False
         self.assertFalse(self.m.One.accepting)
+        with self.assertRaises(TypeError):
+            self.m.One = 'Err'
+        with self.assertRaises(TypeError):
+            self.m.One.accepting = 'Err'
 
     def test_state_deletable(self):
         self.m.One = True
         self.assertIn('One', self.m)
         del self.m.One
         self.assertNotIn('One', self.m)
+        with self.assertRaises(KeyError):
+            del self.m.One
 
     def test_states_in_different_machines(self):
         m1 = ssfsm.Machine()
         m2 = ssfsm.Machine()
         with self.assertRaises(ValueError):
             m1.One['a'] = m2.Two
+
+    def test_transition_target_is_state(self):
+        with self.assertRaises(TypeError):
+            self.m.One['a'] = 'err'
 
     def test_no_init_gives_error(self):
         m = self.m
@@ -63,3 +73,15 @@ class TestBasicSyntax(TestCase):
         self.assertRaises(ValueError, m, 'a')
         m().reset(m.One)
         m('a')
+
+    def test_state_access(self):
+        m = self.m
+        m.One
+        self.assertIn('One', m)
+        self.assertIs(m['One'], m.One)
+
+        del m['One']
+
+        m['One']
+        self.assertIn('One', m)
+        self.assertIs(m['One'], m.One)

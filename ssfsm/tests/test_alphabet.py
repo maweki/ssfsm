@@ -22,3 +22,5 @@ class TestAlphabet(TestCase):
         m().polyfill()
         m('f')
         self.assertRaises(KeyError, m, 'j')
+        self.assertTrue('f' in m.One)
+        self.assertFalse('j' in m.One)
