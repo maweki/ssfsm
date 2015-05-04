@@ -178,3 +178,7 @@ In the future I want to do:
 * a nice documentation
 * more decorators to control program flow
 * Minimization (removing unused states, reduce redundant states)
+
+## License
+
+This library is licensed under GPL 2.0
