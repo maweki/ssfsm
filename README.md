@@ -117,6 +117,14 @@ is an alias for `emmit`.
 
 ### Information about machines and states
 
+`len(Machine)` returns the number of states in the machine
+
+`Machine().state` is the current state. *writable*
+
+`Machine().states` is the set of states
+
+`Machine().alphabet` returns the set of transitions/the alphabet of the machine. *writable*
+
 **If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.
 
 
@@ -149,9 +157,11 @@ A state's name can be accessed via its (read-only) `name`-property.
 States and transitions are kept in dictionaries, therefore a
 state-identifier as well as all transitions need to be hashable.
 
+Transitions are checked for iterability and if they are iterable, they are iterated over and the transitions are applied/created in order. Therefore `Machine.State[''] = Machine.OtherState` will not create a transition, neither will `Machine('')` apply a transition.
+
 ## Unit tests
 
-Just run `nosetests` from within the project directory.
+Just run `nosetests` from within the project directory. The test-coverage (`nosetests --with-coverage --cover-erase`) should be quite high.
 
 ## Further Work
 In the future I want to do:
