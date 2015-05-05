@@ -4,7 +4,10 @@ ssfsm is a constructive library implementing deterministic finite state machines
 thing is, that it has a stupidly simple API.
 
 ## Installation
-TODO - I want to have it with the PyPi
+`pip install ssfsm`
+
+https://pypi.python.org/pypi/ssfsm/
+
 
 ## Usage
 A full documentation is in the works and you can look at some examples
