@@ -163,7 +163,7 @@ class FSM_Machine(object):
         return self().state
 
     def __change_state(self, state):
-        if not self.state.parent is self:
+        if not state.parent is self:
             raise ValueError("States are not in the same machine")
         self.__active_state = state
         return state

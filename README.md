@@ -130,7 +130,7 @@ is an alias for `emmit`.
 
 `Machine().transitions` returns the set of transitions as a three-tuple of *(from, transition, to)* representing the state-transition function as a set.
 
-`Machine().alphabet` returns the set of transitions/the alphabet of the machine. *writable*
+`Machine().alphabet` is the set of transitions/the alphabet of the machine. *writable*
 
 `Machine().deterministic` is True when the machine is deterministic so that for every transition in the alphabet, every state in the machine has that transition and an inital state is defined.
 

@@ -37,6 +37,9 @@ class TestBasicSyntax(TestCase):
         self.assertEqual(2, len(self.m))
         del self.m.One
         self.assertEqual(1, len(self.m))
+        self.m().reset(self.m.Two)
+        self.assertEqual(1, len(self.m))
+
 
     def test_state_accepting(self):
         self.m.One = True
