@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name="ssfsm",
     packages = ['ssfsm'],
-    version="0.5.0",
+    version="0.6.0",
     author="Mario Wenzel",
     author_email="maweki@gmail.com",
     url="https://github.com/maweki/ssfsm",

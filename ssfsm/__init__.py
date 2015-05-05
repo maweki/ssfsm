@@ -1,7 +1,7 @@
 r"""ssfsm is a finite-state-machine implementation with the most simple syntax
 I could come up with."""
 
-VERSION = "0.5.0"
+VERSION = "0.6.0"
 
 def Machine(*nargs, **kwargs):
     """Returns a new :py:class:`FSM_Machine`"""
