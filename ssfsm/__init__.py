@@ -102,6 +102,11 @@ class FSM_Machine(object):
                 def state(self, state):
                     machine._FSM_Machine__change_state(state)
 
+                @property
+                def deterministic(self):
+                    from itertools import product
+                    return (machine._FSM_Machine__initial_state in self.states) and all((trans in state) for (state, trans) in product(self.states, self.alphabet))
+
                 def reset(self, initial_state=None):
                     if initial_state is None:
                         machine._FSM_Machine__change_state(machine._FSM_Machine__initial_state)

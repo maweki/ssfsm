@@ -132,6 +132,8 @@ is an alias for `emmit`.
 
 `Machine().alphabet` returns the set of transitions/the alphabet of the machine. *writable*
 
+`Machine().deterministic` is True when the machine is deterministic so that for every transition in the alphabet, every state in the machine has that transition and an inital state is defined.
+
 **If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.
 
 

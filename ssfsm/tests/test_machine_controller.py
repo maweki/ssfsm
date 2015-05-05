@@ -35,3 +35,26 @@ class TestMachineController(TestCase):
         self.assertIn((m.One, 1, m.One) ,ts)
         self.assertIn((m.Two, 0, m.Two) ,ts)
         self.assertIn((m.Two, 1, m.Two) ,ts)
+
+    def test_deterministic(self):
+        m = self.m
+        m().reset(m.One)
+        print(m().states_names)
+        m.One['ab'] = m.Two
+        self.assertFalse(m().deterministic)
+        m.Two['a'] = m.One
+        self.assertFalse(m().deterministic)
+        m.Two['b'] = m.Two
+        self.assertTrue(m().deterministic)
+        m.One['c'] = m.One
+        self.assertFalse(m().deterministic)
+
+        m = ssfsm.Machine()
+        m.One['ab'] = m.Two
+        self.assertFalse(m().deterministic)
+        m.Two['a'] = m.One
+        self.assertFalse(m().deterministic)
+        m.Two['b'] = m.Two
+        self.assertFalse(m().deterministic)
+        m().reset(m.One)
+        self.assertTrue(m().deterministic)
