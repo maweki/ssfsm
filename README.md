@@ -120,6 +120,10 @@ If you want the transition to happen after the actual function
 call and observe the previous state, you can use the decorator `emmit_after`. `emmit_before`
 is an alias for `emmit`.
 
+### Machine operations
+
+`~Machine` returns a negated copy of the Machine. The current and initial state are the current and inital state of the original Machine.
+
 ### Information about machines and states
 
 `len(Machine)` returns the number of states in the machine

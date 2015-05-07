@@ -199,6 +199,12 @@ class FSM_Machine(object):
             return object.__setattr__(self, name, value)
         self[name] = value
 
+    def __invert__(self):
+        with self as new_machine:
+            for state in new_machine().states:
+                state.accepting = not state.accepting
+            return new_machine
+
 class FSM_State(object):
     """State of a finite state machine"""
     def __init__(self, parent, name):
