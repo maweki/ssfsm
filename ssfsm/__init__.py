@@ -107,6 +107,11 @@ class FSM_Machine(object):
                     from itertools import product
                     return (machine._FSM_Machine__initial_state in self.states) and all((trans in state) for (state, trans) in product(self.states, self.alphabet))
 
+                @property
+                def initial_state(self):
+                    # @TODO This needs to be settable as well
+                    return machine._FSM_Machine__initial_state
+
                 def reset(self, initial_state=None):
                     if initial_state is None:
                         machine._FSM_Machine__change_state(machine._FSM_Machine__initial_state)

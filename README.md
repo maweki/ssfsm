@@ -132,6 +132,8 @@ of the negated copy are the current and initial state of the original Machine.
 
 `Machine().state` is the current state. *writable*
 
+`Machine().initial_state` is the initial state.
+
 `Machine().states` is the set of states
 
 `Machine().transitions` returns the set of transitions as a three-tuple of *(from, transition, to)* representing the state-transition function as a set.
