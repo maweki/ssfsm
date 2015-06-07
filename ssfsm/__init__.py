@@ -73,88 +73,6 @@ class FSM_Machine(object):
 
     def __call__(self, transition=None):
         if transition is None:
-            machine = self
-            class FSM_Machine_Controller(object):
-                def __init__(self, parent):
-                    self.parent = parent
-
-                def __call__(self):
-                    # @TODO Is this the expected behaviour?
-                    return self.state
-
-                @property
-                def accepting(self):
-                    return bool(machine)
-
-                @property
-                def states(self):
-                    return frozenset(machine._FSM_Machine__states.values())
-
-                @property
-                def states_names(self):
-                    return frozenset(s.name for s in self.states)
-
-                @property
-                def state(self):
-                    return machine._FSM_Machine__active_state
-
-                @state.setter
-                def state(self, state):
-                    machine._FSM_Machine__change_state(state)
-
-                @property
-                def deterministic(self):
-                    from itertools import product
-                    return (machine._FSM_Machine__initial_state in self.states) and all((trans in state) for (state, trans) in product(self.states, self.alphabet))
-
-                @property
-                def initial_state(self):
-                    # @TODO This needs to be settable as well
-                    return machine._FSM_Machine__initial_state
-
-                def reset(self, initial_state=None):
-                    if initial_state is None:
-                        machine._FSM_Machine__change_state(machine._FSM_Machine__initial_state)
-                    else:
-                        if initial_state.parent is self.parent:
-                            machine._FSM_Machine__initial_state = initial_state
-                            self.reset()
-                        else:
-                            raise ValueError("States are not in the same machine")
-
-                @property
-                def alphabet(self):
-                    s = machine._FSM_Machine__alphabet
-                    for state in self.states:
-                        s = s | state.transitions
-                    return s
-
-                @alphabet.setter
-                def alphabet(self, val):
-                    to_delete = self.alphabet - frozenset(val)
-                    machine._FSM_Machine__alphabet = frozenset(val)
-                    for state in self.states:
-                        for d in to_delete:
-                            if d in state:
-                                del state[d]
-
-                @property
-                def transitions(self):
-                    def __transitions():
-                        for fro in self.states:
-                            for trans in fro.transitions:
-                                yield (fro, trans, fro[trans])
-                    return frozenset(__transitions())
-
-                def polyfill(self, target=None):
-                    for state in self.states:
-                        for transition in self.alphabet:
-                            if not transition in state:
-                                if not target:
-                                    state[transition] = state
-                                else:
-                                    state[transition] = target
-
             return FSM_Machine_Controller(self)
 
         try:
@@ -209,6 +127,91 @@ class FSM_Machine(object):
             for state in new_machine().states:
                 state.accepting = not state.accepting
             return new_machine
+
+class FSM_Machine_Controller(object):
+    def __init__(self, parent):
+        self.__parent = parent
+
+    def __call__(self):
+        # @TODO Is this the expected behaviour?
+        return self.state
+
+    @property
+    def parent(self):
+        return self.__parent
+
+    @property
+    def accepting(self):
+        return bool(self.parent)
+
+    @property
+    def states(self):
+        return frozenset(self.parent._FSM_Machine__states.values())
+
+    @property
+    def states_names(self):
+        return frozenset(s.name for s in self.states)
+
+    @property
+    def state(self):
+        return self.parent._FSM_Machine__active_state
+
+    @state.setter
+    def state(self, state):
+        self.parent._FSM_Machine__change_state(state)
+
+    @property
+    def deterministic(self):
+        from itertools import product
+        return (self.parent._FSM_Machine__initial_state in self.states) and all((trans in state) for (state, trans) in product(self.states, self.alphabet))
+
+    @property
+    def initial_state(self):
+        # @TODO This needs to be settable as well
+        return self.parent._FSM_Machine__initial_state
+
+    def reset(self, initial_state=None):
+        if initial_state is None:
+            self.parent._FSM_Machine__change_state(self.parent._FSM_Machine__initial_state)
+        else:
+            if initial_state.parent is self.__parent:
+                self.parent._FSM_Machine__initial_state = initial_state
+                self.reset()
+            else:
+                raise ValueError("States are not in the same machine")
+
+    @property
+    def alphabet(self):
+        s = self.parent._FSM_Machine__alphabet
+        for state in self.states:
+            s = s | state.transitions
+        return s
+
+    @alphabet.setter
+    def alphabet(self, val):
+        to_delete = self.alphabet - frozenset(val)
+        self.parent._FSM_Machine__alphabet = frozenset(val)
+        for state in self.states:
+            for d in to_delete:
+                if d in state:
+                    del state[d]
+
+    @property
+    def transitions(self):
+        def __transitions():
+            for fro in self.states:
+                for trans in fro.transitions:
+                    yield (fro, trans, fro[trans])
+        return frozenset(__transitions())
+
+    def polyfill(self, target=None):
+        for state in self.states:
+            for transition in self.alphabet:
+                if not transition in state:
+                    if not target:
+                        state[transition] = state
+                    else:
+                        state[transition] = target
 
 class FSM_State(object):
     """State of a finite state machine"""
