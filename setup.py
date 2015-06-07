@@ -26,9 +26,11 @@ setup(
 ],
     long_description=
 """
-ssfsm is a constructive library implementing deterministic finite state machines. The fun thing is, that it has a stupidly simple API.
-Example::
-    # A FSM that accepts b*a(ab)*
+ssfsm is a constructive library implementing deterministic finite state machines
+(currently only deterministic finite automaton - DFAs).
+The fun thing is, that it has a stupidly simple API.Example::
+
+    # A DFA that accepts b*a(ab)*
     import ssfsm
     A = ssfsm.Machine()
     A.One['a'] = A.Two
@@ -51,5 +53,7 @@ Some helpers to make construction even easier so the first example can be writte
     A.One['b'] = A.One
     A().polyfill(A.Two)
     A.Two = True
+
+See https://github.com/maweki/ssfsm for a full guide.
 """
 )

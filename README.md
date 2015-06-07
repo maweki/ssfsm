@@ -1,7 +1,8 @@
 # ssfsm - Stupidly Simple Finite State Machines
 
-ssfsm is a constructive library implementing deterministic finite state machines. The fun
-thing is, that it has a stupidly simple API.
+ssfsm is a constructive library implementing deterministic finite state machines
+(currently only deterministic finite automaton - DFAs).
+The fun thing is, that it has a stupidly simple API.
 
 ## Installation
 `pip install ssfsm`
@@ -14,9 +15,9 @@ A full documentation is in the works and you can look at some examples
 in the tests-directory but here are a few ideas on how the library works:
 
 
-### Basic construction
+### Basic construction of DFAs
 ```
-# A FSM that accepts b*a(ab)*
+# A DFA that accepts b*a(ab)*
 import ssfsm
 A = ssfsm.Machine()
 A.One['a'] = A.Two
@@ -37,7 +38,7 @@ A().states # frozenset({<ssfsm.FSM_State object>})
 Their transitions (and the transitions leading to them) will be removed as well.
 
 ### Transitions
-Transitions are executed via calling the machine with the transition.
+Transitions are executed by calling the machine with the transition.
 ```
 A('a') # a-Transition
 A('ab') # a-Transition followed by b-Transition
@@ -46,7 +47,7 @@ A('ab') # a-Transition followed by b-Transition
 The current state after the last transition is returned. Because of the order of execution, `Machine('a') is Machine().state` is True (given the transition exists) while `Machine().state is Machine('a')` may not be.
 
 ### Accepting
-When cast to boolean, we see whether the FSM is in an accepting state
+When cast to boolean, we see whether the DFA is in an accepting state
 or not.
 ```
 A('baab')
@@ -57,7 +58,7 @@ else:
 ```
 
 ### Polyfill
-Constructing FSMs, even with a nice syntax, can be tedious. So here is
+Constructing DFAs, even with a nice syntax, can be tedious. So here is
 polyfill:
 ```
 A = ssfsm.Machine()
@@ -82,7 +83,7 @@ A.One.transitions # frozenset()
 ```
 
 ### with/copy
-If you've painstakenly created a FSM and want to use it but, after usage,
+If you've painstakenly created a DFA and want to use it but, after usage,
 want to return to a previous state, you can use the **with** statement.
 
 ```
@@ -122,9 +123,10 @@ is an alias for `emmit`.
 
 ### Machine operations
 
-`~Machine` returns a negated copy of the Machine. The current and initial state are the current and inital state of the original Machine.
+`~Machine` returns a negated copy of the Machine. The current and initial state
+of the negated copy are the current and initial state of the original Machine.
 
-### Information about machines and states
+### Information about machines
 
 `len(Machine)` returns the number of states in the machine
 
@@ -140,6 +142,17 @@ is an alias for `emmit`.
 
 **If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.
 
+### Information about states
+
+`state.name` is the name of the state.
+
+`state.parent` is the DFA the state is in.
+
+`state.transitions` is the set of transitions the state has.
+
+`state.accepting` whether the state is an accepting state. *writable*
+
+`a in state` whether a is a transition of the state.
 
 
 ### Programmatic quirks and implementation details
@@ -165,8 +178,6 @@ sugar and is **not equal** to `f = Machine.State; f = True`. If you want
 to do something like that, the syntax is `f = Machine.State; f.accepting = True`.
 The accepting-property can also be read.
 
-A state's name can be accessed via its (read-only) `name`-property.
-
 States and transitions are kept in dictionaries, therefore a
 state-identifier as well as all transitions need to be hashable.
 
@@ -182,11 +193,13 @@ Just run `nosetests` from within the project directory. The test-coverage (`nose
 ## Further Work
 In the future I want to do:
 * more tests
-* nondeterministic FSMs
-* operations on FSMs (concatenation, union, intersection)
+* nondeterministic DFAs
+* operations on DFAs (concatenation, union, intersection)
 * a nice documentation
 * more decorators to control program flow
 * Minimization (removing unused states, reduce redundant states)
+* dot output
+* other finite state machines than DFAs
 
 ## License
 
