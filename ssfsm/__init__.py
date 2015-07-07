@@ -195,8 +195,17 @@ class FSM_Machine_Controller(object):
 
     @property
     def initial_state(self):
-        # @TODO This needs to be settable as well
         return self.parent._FSM_Machine__initial_state
+
+    @initial_state.setter
+    def initial_state(self, state):
+        if not isinstance(state, FSM_State):
+            raise TypeError("Transition target must be a state")
+
+        if state.parent is self.__parent:
+            self.parent._FSM_Machine__initial_state = state
+        else:
+            raise ValueError("States are not in the same machine")
 
     @property
     def dot(self):

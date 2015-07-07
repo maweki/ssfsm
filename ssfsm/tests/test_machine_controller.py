@@ -23,6 +23,27 @@ class TestMachineController(TestCase):
         self.assertIs(m()(), m.One)
         self.assertIs(m(()), m.One)
 
+    def test_controller_initial_state(self):
+        m = self.m
+        m().reset(m.One)
+        self.assertIs(m.One, m().initial_state)
+
+    def test_controller_initial_state_settable(self):
+        m = self.m
+        m().reset(m.One)
+        m.Two
+        self.assertIs(m.One, m().initial_state)
+        m().initial_state = m.Two
+        self.assertIs(m.Two, m().initial_state)
+
+        with self.assertRaises(TypeError):
+            m().initial_state = False
+
+        m2 = ssfsm.Machine()
+        m2.Foo
+        with self.assertRaises(ValueError):
+            m().initial_state = m2.Foo
+
     def test_transitions(self):
         m = self.m
         self.assertEqual(m().transitions, frozenset())

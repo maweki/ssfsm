@@ -132,7 +132,7 @@ of the negated copy are the current and initial state of the original Machine.
 
 `Machine().state` is the current state. *writable*
 
-`Machine().initial_state` is the initial state.
+`Machine().initial_state` is the initial state. *writable*
 
 `Machine().states` is the set of states
 
