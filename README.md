@@ -142,6 +142,8 @@ of the negated copy are the current and initial state of the original Machine.
 
 `Machine().deterministic` is True when the machine is deterministic so that for every transition in the alphabet, every state in the machine has that transition and an inital state is defined.
 
+`Machine().dot` is the string representing the machine as a dot-graph.
+
 **If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.
 
 ### Information about states
@@ -200,7 +202,6 @@ In the future I want to do:
 * a nice documentation
 * more decorators to control program flow
 * Minimization (removing unused states, reduce redundant states)
-* dot output
 * other finite state machines than DFAs
 
 ## License

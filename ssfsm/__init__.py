@@ -128,6 +128,34 @@ class FSM_Machine(object):
                 state.accepting = not state.accepting
             return new_machine
 
+    def __toDot(self):
+        from collections import defaultdict
+        statements = []
+        statements += [ 'rankdir=LR' ]
+        statements += [ '0  [ style=invis ][ shape=point ]' ]
+
+        nodes = dict((state, num) for num, state in enumerate(self.__states.values(), start=1)) # node -> its id
+        for node in nodes:
+            # register nodes
+            shape = 'doublecircle' if node.accepting else 'circle'
+            statements += [ '%d [ shape=%s ][ label="%s" ]' % (nodes[node], shape, str(node.name)) ]
+
+        for from_node in nodes:
+            # build edges
+            collected_transitions = defaultdict(set) # to_node -> set of transitions
+            for transition in from_node.transitions:
+                collected_transitions[from_node[transition]].add(str(transition))
+
+            for to_node in collected_transitions:
+                sep = '' if all(len(str(t)) == 1 for t in collected_transitions[to_node]) else ', '
+                statements += [ '%d -> %d [ label="%s" ]' % ( nodes[from_node], nodes[to_node], sep.join(sorted(collected_transitions[to_node])) ) ]
+
+            if from_node is self.__initial_state:
+                statements += [ '0 -> %d' % nodes[from_node] ]
+
+        graph = 'digraph { stmt_list }'.replace('stmt_list', ';\n'.join(statements))
+        return graph
+
 class FSM_Machine_Controller(object):
     def __init__(self, parent):
         self.__parent = parent
@@ -169,6 +197,10 @@ class FSM_Machine_Controller(object):
     def initial_state(self):
         # @TODO This needs to be settable as well
         return self.parent._FSM_Machine__initial_state
+
+    @property
+    def dot(self):
+        return self.parent._FSM_Machine__toDot()
 
     def reset(self, initial_state=None):
         if initial_state is None:
