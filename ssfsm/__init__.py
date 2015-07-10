@@ -122,6 +122,43 @@ class FSM_Machine(object):
             return object.__setattr__(self, name, value)
         self[name] = value
 
+    def __or__(self, other):
+        from operator import or_
+        return FSM_Machine.__cross_combine(self, other, or_)
+
+    def __and__(self, other):
+        from operator import and_
+        return FSM_Machine.__cross_combine(self, other, and_)
+
+    def __sub__(self, other):
+        return FSM_Machine.__cross_combine(self, other, lambda a, b: a and not b)
+
+    def __xor__(self, other):
+        from operator import xor
+        return FSM_Machine.__cross_combine(self, other, xor)
+
+    @staticmethod
+    def __cross_combine(first, second, accepting_operation):
+        if not (first().deterministic and second().deterministic):
+            raise ValueError("Not all machines in that combination are deterministic")
+        if not first().alphabet == second().alphabet:
+            raise ValueError("Alphabets are not equal")
+
+        from itertools import product
+        new_machine = Machine()
+
+        for f, s in product(first().states, second().states):
+            # @TODO Improvement: do that constructively
+            new_machine[(f.name,s.name)].accepting = accepting_operation(f.accepting, s.accepting)
+            for a in first().alphabet:
+                new_machine[(f.name,s.name)][a] = new_machine[(f[a].name, s[a].name)]
+
+        initial = (first().initial_state.name, second().initial_state.name)
+        new_machine().reset(new_machine[initial])
+        new_machine().state = new_machine[(first().state.name, second().state.name)]
+
+        return new_machine
+
     def __invert__(self):
         with self as new_machine:
             for state in new_machine().states:

@@ -126,6 +126,26 @@ is an alias for `emmit`.
 `~Machine` returns a negated copy of the Machine. The current and initial state
 of the negated copy are the current and initial state of the original Machine.
 
+`MachineA - MachineB` returns a DFA that has all the accepting words of A
+without those of B (difference). Both DFAs need to be deterministic. Both DFAs
+need to have the same alphabet.
+
+`MachineA & MachineB` returns a DFA that has all the accepting words of A
+that are also accepting words of B (intersection). Both DFAs need to be
+deterministic. Both DFAs need to have the same alphabet.
+
+`MachineA | MachineB` returns a DFA that has all the accepting words of A
+and all accepting words of B (union). Both DFAs need to be deterministic. Both
+DFAs need to have the same alphabet.
+
+`MachineA ^ MachineB` returns a DFA that has all the accepting words of A
+and all accepting words of B that are not accepting words of A and B (symmetric difference).
+Both DFAs need to be deterministic. Both DFAs need to have the same alphabet.
+
+For the operations `-`, `&`, `|` and `^`, the resulting machine has (as its states)
+the cross-product of the states of the original DFAs. The machine is not minimized
+(so it may have redundant and unreachable states).
+
 ### Information about machines
 
 `len(Machine)` returns the number of states in the machine
@@ -198,7 +218,7 @@ Just run `nosetests` from within the project directory. The test-coverage (`nose
 In the future I want to do:
 * more tests
 * nondeterministic DFAs
-* operations on DFAs (concatenation, union, intersection)
+* more operations on DFAs (concatenation)
 * a nice documentation
 * more decorators to control program flow
 * Minimization (removing unused states, reduce redundant states)
