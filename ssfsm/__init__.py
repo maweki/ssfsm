@@ -325,6 +325,23 @@ class FSM_State(object):
     def transitions(self):
         return frozenset(self.__following.keys())
 
+    @property
+    def following(self):
+        return frozenset(self.__following.values())
+
+    @property
+    def reachable(self):
+        reachable = frozenset()
+        queue = set([self])
+        done = set()
+
+        while queue:
+            this = queue.pop()
+            reachable = reachable | this.following
+            done.add(this)
+            queue = queue | (this.following - done)
+        return reachable
+
     def delete(self, f_state):
         to_delete = set()
         for key, value in self.__following.items():
@@ -355,6 +372,15 @@ class FSM_State(object):
 
     def __delitem__(self, key):
         del self.__following[key]
+
+    def __gt__(self, other):
+        return other in self.following
+
+    def __lt__(self, other):
+        return (other > self)
+
+    def __rshift__(self, other):
+        return other in self.reachable
 
 
 def emmit_before(machine, transition):

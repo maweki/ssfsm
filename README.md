@@ -174,10 +174,19 @@ the cross-product of the states of the original DFAs. The machine is not minimiz
 
 `state.transitions` is the set of transitions the state has.
 
+`state.following` is the set of states directly reachable via the transitions (1 step)
+
+`state.reachable` is the set of states reachable via the transitions (1 or more steps)
+
 `state.accepting` whether the state is an accepting state. *writable*
 
 `a in state` whether a is a transition of the state.
 
+`state1 > state2` whether `state2` is directly reachable from `state1` (equivalent
+  to `state2 in state1.transitions`)
+
+`state1 >> state2` whether `state2` is reachable from `state1` (equivalent
+  to `state2 in state1.reachable`)
 
 ### Programmatic quirks and implementation details
 
