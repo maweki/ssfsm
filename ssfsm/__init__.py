@@ -383,12 +383,15 @@ class FSM_State(object):
         del self.__following[key]
 
     def __gt__(self, other):
+        # TODO: Raise value error if states from different machines
         return other in self.following
 
     def __lt__(self, other):
+        # TODO: Raise value error if states from different machines
         return (other > self)
 
     def __rshift__(self, other):
+        # TODO: Raise value error if states from different machines
         return other in self.reachable
 
 
