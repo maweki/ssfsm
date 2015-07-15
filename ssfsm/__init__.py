@@ -237,7 +237,7 @@ class FSM_Machine_Controller(object):
     @property
     def deterministic(self):
         from itertools import product
-        return (self.parent._FSM_Machine__initial_state in self.states) and all((trans in state) for (state, trans) in product(self.states, self.alphabet))
+        return (self.initial_state in self.states) and all((trans in state) for (state, trans) in product(self.states, self.alphabet))
 
     @property
     def initial_state(self):
@@ -259,10 +259,10 @@ class FSM_Machine_Controller(object):
 
     def reset(self, initial_state=None):
         if initial_state is None:
-            self.parent._FSM_Machine__change_state(self.parent._FSM_Machine__initial_state)
+            self.parent._FSM_Machine__change_state(self.initial_state)
         else:
-            if initial_state.parent is self.__parent:
-                self.parent._FSM_Machine__initial_state = initial_state
+            if initial_state.parent is self.parent:
+                self.initial_state = initial_state
                 self.reset()
             else:
                 raise ValueError("States are not in the same machine")
