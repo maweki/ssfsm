@@ -7,6 +7,16 @@ def Machine(*nargs, **kwargs):
     """Returns a new :py:class:`FSM_Machine`"""
     return FSM_Machine(*nargs, **kwargs)
 
+def require_determinism(func):
+    from functools import wraps
+    @wraps(func)
+    def wrapper(*args):
+        for arg in args:
+            if (isinstance(arg, FSM_Machine) and not arg().deterministic) or (isinstance(arg, FSM_Machine_Controller) and not arg.deterministic):
+                raise ValueError("One or all Machines are not deterministic")
+        return func(*args)
+    return wrapper
+
 class FSM_Machine(object):
     """The machine"""
 
@@ -138,9 +148,8 @@ class FSM_Machine(object):
         return FSM_Machine.__cross_combine(self, other, xor)
 
     @staticmethod
+    @require_determinism
     def __cross_combine(first, second, accepting_operation):
-        if not (first().deterministic and second().deterministic):
-            raise ValueError("Not all machines in that combination are deterministic")
         if not first().alphabet == second().alphabet:
             raise ValueError("Alphabets are not equal")
 
