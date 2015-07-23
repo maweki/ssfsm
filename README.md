@@ -162,6 +162,19 @@ the cross-product of the states of the original DFAs. The machine is not minimiz
 
 `Machine().deterministic` is True when the machine is deterministic so that for every transition in the alphabet, every state in the machine has that transition and an inital state is defined.
 
+`Machine().reachable_states` is the set of states reachable from the initial state
+(the empty set, if no inital state is set)
+
+`Machine().accepting_states` is the set of states that are accepting
+
+`Machine().infinite_language` and `Machine().finite_language` whether the by the
+automaton descibeded language is finite or infinite.
+
+`Machine().language` returns a generator of all words of the language (as tuples
+of increasing length). The language might be infinite. The words are yielded with
+increasing length. If the alphabet can be sorted, words of the same length will
+be yielded in lexicographical order.
+
 `Machine().dot` is the string representing the machine as a dot-graph.
 
 **If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.

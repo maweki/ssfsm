@@ -254,6 +254,17 @@ class FSM_Machine_Controller(object):
             raise ValueError("States are not in the same machine")
 
     @property
+    def reachable_states(self):
+        if (self.initial_state in self.states):
+            return self.initial_state.reachable
+        else:
+            return frozenset()
+
+    @property
+    def accepting_states(self):
+        return frozenset(s for s in self.states if s.accepting)
+
+    @property
     def dot(self):
         return self.parent._FSM_Machine__toDot()
 
@@ -290,6 +301,41 @@ class FSM_Machine_Controller(object):
                 for trans in fro.transitions:
                     yield (fro, trans, fro[trans])
         return frozenset(__transitions())
+
+    @property
+    @require_determinism
+    def infinite_language(self):
+        # using pumping lemma
+        from itertools import product
+        reachable = self.reachable_states
+        looping_states = (state for state in reachable if state >> state)
+        return any(state >> accepting for state, accepting in product(looping_states, self.accepting_states & reachable))
+
+    @property
+    def finite_language(self):
+        return not self.infinite_language
+
+    @property
+    @require_determinism
+    def language(self):
+        from collections import deque
+        try:
+            alph = list(sorted(self.alphabet))
+        except:
+            alph = self.alphabet
+        q = deque()
+        with self.parent as machine:
+            accepting = machine().reachable_states & machine().accepting_states
+            q.append(())
+            while q:
+                thisword = q.popleft()
+                machine().reset()
+                machine(thisword)
+                if machine:
+                    yield thisword
+                if machine().state.reachable & accepting:
+                    for a in alph:
+                        q.append(thisword + (a,))
 
     def polyfill(self, target=None):
         for state in self.states:
