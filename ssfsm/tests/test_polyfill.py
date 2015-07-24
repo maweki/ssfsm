@@ -38,3 +38,12 @@ class TestPolyfill(TestCase):
         self.assertIs(m.Start['a'], m.End)
         self.assertIs(m.End['a'], m.End)
         self.assertIs(m.End['b'], m.Start)
+
+    def test_polyfill_longwords(self):
+        m = self.m
+        m.A[('aa',)] = m.B
+        m.B[('bb',)] = m.A
+        a1 = m().alphabet
+        m().polyfill()
+        a2 = m().alphabet
+        self.assertEquals(a1, a2)
