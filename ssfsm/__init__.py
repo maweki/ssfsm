@@ -66,7 +66,7 @@ class FSM_Machine(object):
                 copy().state = copy[key]
         for key in self.__states:
             for transition in self.__states[key].transitions:
-                copy[key][transition] = copy[self.__states[key][transition].name]
+                copy[key][(transition,)] = copy[self.__states[key][transition].name]
         return copy
 
     def __deepcopy__(self, _):
@@ -160,7 +160,7 @@ class FSM_Machine(object):
             # @TODO Improvement: do that constructively
             new_machine[(f.name,s.name)].accepting = accepting_operation(f.accepting, s.accepting)
             for a in first().alphabet:
-                new_machine[(f.name,s.name)][a] = new_machine[(f[a].name, s[a].name)]
+                new_machine[(f.name,s.name)][(a,)] = new_machine[(f[a].name, s[a].name)]
 
         initial = (first().initial_state.name, second().initial_state.name)
         new_machine().reset(new_machine[initial])
@@ -296,9 +296,9 @@ class FSM_Machine_Controller(object):
             for transition in self.alphabet:
                 if not transition in state:
                     if not target:
-                        state[transition] = state
+                        state[(transition,)] = state
                     else:
-                        state[transition] = target
+                        state[(transition,)] = target
 
 class FSM_State(object):
     """State of a finite state machine"""

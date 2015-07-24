@@ -48,3 +48,12 @@ class TestWith(TestCase):
         self.m().alphabet = 'a'
         with self.m as copy:
             self.assertEqual(self.m().alphabet, copy().alphabet)
+
+    def test_with_multi_alphabet(self):
+        m = ssfsm.Machine()
+        m.One[('aa','bb')] = m.Two
+        m.Two[('aa',)] = m.One
+        m.Two[('bb',)] = m.Two
+        m().reset(m.One)
+        with m as m_:
+            self.assertEqual(m().alphabet, m_().alphabet)

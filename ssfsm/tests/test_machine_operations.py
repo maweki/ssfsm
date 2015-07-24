@@ -133,6 +133,24 @@ class TestMachineOperators(TestCase):
         self.assertTrue(len(difference2) <= max_len)
         self.assertTrue(len(sym_diff) <= max_len)
 
+    def test_multi_alph(self):
+        A = ssfsm.Machine(0) # A is empty or ends with b
+        A[0] = True
+        A[0][('bb',)] = A[0]
+        A[0][('aa',)] = A[1]
+        A[1][('aa',)] = A[1]
+        A[1][('bb',)] = A[0]
+
+        B = ssfsm.Machine(0) # B has aa
+        B[0][('aa',)] = B[1]
+        B[0][('bb',)] = B[0]
+        B[1][('aa',)] = B[2]
+        B[1][('bb',)] = B[0]
+        B[2] = True
+        B[2][('aa','bb')] = B[2]
+
+        self.assertEqual((A & B)().alphabet, A().alphabet)
+
     def test_error_det(self):
         A = ssfsm.Machine(0)
         A[0]['ab'] = A[1]
