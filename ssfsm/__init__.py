@@ -338,18 +338,27 @@ class FSM_State(object):
     def following(self):
         return frozenset(self.__following.values())
 
-    @property
-    def reachable(self):
+    def __reachable_shortest_paths(self):
         reachable = frozenset()
-        queue = set([self])
+        reachable_states = lambda : frozenset(s for _,s in reachable)
+        queue = {((), self)}
         done = set()
 
         while queue:
-            this = queue.pop()
-            reachable = reachable | this.following
+            this_prefix, this = queue.pop()
+
+            if this in done:
+                continue
             done.add(this)
-            queue = queue | (this.following - done)
+
+            next_pairs = frozenset((this_prefix + (t,), this[t]) for t in this.transitions if not this[t] in reachable_states())
+            reachable = reachable | next_pairs
+            queue = queue | next_pairs
         return reachable
+
+    @property
+    def reachable(self):
+        return frozenset(s for _,s in self.__reachable_shortest_paths())
 
     def delete(self, f_state):
         to_delete = set()
