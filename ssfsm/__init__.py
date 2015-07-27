@@ -361,10 +361,7 @@ class FSM_State(object):
         return frozenset(s for _,s in self.__reachable_shortest_paths())
 
     def delete(self, f_state):
-        to_delete = set()
-        for key, value in self.__following.items():
-            if value is f_state:
-                to_delete.add(key)
+        to_delete = frozenset(key for key, value in self.__following.items() if value is f_state)
         for key in to_delete:
             del self[key]
 
