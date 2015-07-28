@@ -356,6 +356,9 @@ class FSM_State(object):
             queue = queue | next_pairs
         return reachable
 
+    def path_to(self, other):
+        return next((f for f, s in self.__reachable_shortest_paths() if s is other), None)
+
     @property
     def reachable(self):
         return frozenset(s for _,s in self.__reachable_shortest_paths())
