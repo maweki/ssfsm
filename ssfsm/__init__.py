@@ -328,6 +328,11 @@ class FSM_Machine_Controller(object):
 
     @property
     @require_determinism
+    def regular_language(self):
+        return True
+
+    @property
+    @require_determinism
     def language(self):
         from collections import deque
         try:

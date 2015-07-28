@@ -175,6 +175,9 @@ of increasing length). The language might be infinite. The words are yielded wit
 increasing length. If the alphabet can be sorted, words of the same length will
 be yielded in lexicographical order.
 
+`Machine().regular_language` returns True, if the language described by the DFA
+is a regular language.
+
 `Machine().dot` is the string representing the machine as a dot-graph.
 
 **If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.
