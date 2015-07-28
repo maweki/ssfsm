@@ -305,11 +305,22 @@ class FSM_Machine_Controller(object):
     @property
     @require_determinism
     def infinite_language(self):
+        return any(self.__get_infinite_language_states())
+
+    def __get_infinite_language_states(self):
         # using pumping lemma
         from itertools import product
         reachable = self.reachable_states
         looping_states = (state for state in reachable if state >> state)
-        return any(state >> accepting for state, accepting in product(looping_states, self.accepting_states & reachable))
+        return ((state, accepting) for state, accepting in product(looping_states, self.accepting_states & reachable) if state >> accepting)
+
+    @require_determinism
+    def get_pumping_lemma(self):
+        for state, accepting in self.__get_infinite_language_states():
+            prefix = () if self.initial_state is state else self.initial_state.path_to(state)
+            suffix = () if state is accepting else state.path_to(accepting)
+            return (prefix, state.path_to(state), suffix)
+        return None
 
     @property
     def finite_language(self):
