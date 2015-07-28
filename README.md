@@ -170,6 +170,11 @@ the cross-product of the states of the original DFAs. The machine is not minimiz
 `Machine().infinite_language` and `Machine().finite_language` whether the by the
 automaton descibeded language is finite or infinite.
 
+`Machine().get_pumping_lemma()` returns a triple u,v,w so that any u v* w is in
+the language of the automaton. This triple can be used to show, that the language
+is infinite, using the pumping lemma. If the language is finite, this method
+returns *None*.
+
 `Machine().language` returns a generator of all words of the language (as tuples
 of increasing length). The language might be infinite. The words are yielded with
 increasing length. If the alphabet can be sorted, words of the same length will
