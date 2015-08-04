@@ -183,6 +183,9 @@ be yielded in lexicographical order.
 `Machine().regular_language` returns True, if the language described by the DFA
 is a regular language.
 
+`Machine().remove_unreachable_states()` removes all states of the machine that
+are not reachable from the initial state.
+
 `Machine().dot` is the string representing the machine as a dot-graph.
 
 **If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.
@@ -239,6 +242,10 @@ Transitions are checked for iterability and if they are iterable, they are itera
 
 `Machine()()`, is like an empty transition and therefore an
 alias to `Machine().state` or `Machine(())` or `Machine('')`
+
+Due to how the **del** statement works, `del m.A` is not equivalent to `a = m.A; del a`.
+The latter does only remove the reference `a` from the frame and not the A-state
+from the machine.
 
 ## Unit tests
 

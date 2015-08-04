@@ -302,6 +302,11 @@ class FSM_Machine_Controller(object):
                     yield (fro, trans, fro[trans])
         return frozenset(__transitions())
 
+    @require_determinism
+    def remove_unreachable_states(self):
+        for rem in self.states - self.reachable_states:
+            del self.parent[rem.name]
+
     @property
     @require_determinism
     def infinite_language(self):

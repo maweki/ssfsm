@@ -79,3 +79,17 @@ class TestMachineController(TestCase):
         self.assertFalse(m().deterministic)
         m().reset(m.One)
         self.assertTrue(m().deterministic)
+
+    def test_remove_unreachable(self):
+        m = self.m
+        m.A['ab'] = m.B
+        m.B['a'] = m.B
+        m.B['b'] = m.A
+        m().reset(m.A)
+        self.assertEqual(len(m), 2)
+        m().remove_unreachable_states()
+        self.assertEqual(len(m), 2)
+        m.C['ab'] = m.A
+        self.assertEqual(len(m), 3)
+        m().remove_unreachable_states()
+        self.assertEqual(len(m), 2)
