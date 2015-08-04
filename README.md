@@ -168,7 +168,7 @@ the cross-product of the states of the original DFAs. The machine is not minimiz
 `Machine().accepting_states` is the set of states that are accepting
 
 `Machine().infinite_language` and `Machine().finite_language` whether the by the
-automaton descibeded language is finite or infinite.
+automaton described language is finite or infinite.
 
 `Machine().get_pumping_lemma()` returns a triple u,v,w so that any u v* w is in
 the language of the automaton. This triple can be used to show, that the language
