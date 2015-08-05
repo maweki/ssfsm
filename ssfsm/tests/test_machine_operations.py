@@ -201,3 +201,15 @@ class TestMachineOperators(TestCase):
 
         with self.assertRaises(ValueError):
             A & B
+
+        with self.assertRaises(ValueError):
+            A | B
+
+        with self.assertRaises(ValueError):
+            A ^ B
+
+        with self.assertRaises(ValueError):
+            A - B
+
+        with self.assertRaises(ValueError):
+            A + B
