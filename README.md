@@ -146,6 +146,14 @@ For the operations `-`, `&`, `|` and `^`, the resulting machine has (as its stat
 the cross-product of the states of the original DFAs. The machine is not minimized
 (so it may have redundant and unreachable states).
 
+`MachineA + MachineB` returns a DFA that has the concatenation of the languages
+of A and B so that the language of A + B is every word accepted by A concatenated
+with every word accepted by B.
+
+For the operation `+` the states of the resulting machine have as their names
+a tuple where the first part is a state from A and the second part is a frozenset
+of states from B (or an empty set).
+
 ### Information about machines
 
 `len(Machine)` returns the number of states in the machine

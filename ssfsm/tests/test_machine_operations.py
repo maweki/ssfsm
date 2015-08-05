@@ -151,6 +151,33 @@ class TestMachineOperators(TestCase):
 
         self.assertEqual((A & B)().alphabet, A().alphabet)
 
+    def test_concatenation(self):
+        import re
+        B = ssfsm.Machine(0) # B has aa
+        B[0]['a'] = B[1]
+        B[0]['b'] = B[0]
+        B[1]['a'] = B[2]
+        B[1]['b'] = B[0]
+        B[2] = True
+        B[2]['ab'] = B[2]
+
+        cat = B + B
+        fitting_regex = r"^.*(aa)+.*(aa).*$"
+
+        for word in self.all_words(B().alphabet, 10):
+            with cat as cat_copy:
+                cat_copy(word)
+                self.assertEqual(bool(cat_copy),bool(re.match(fitting_regex, ''.join(word))))
+
+        from itertools import islice
+        cat_neg = ~cat
+        for word in islice(cat().language, 10000):
+            self.assertIsNot(None, re.match(fitting_regex, ''.join(word)))
+
+        for word in islice(cat_neg().language, 10000):
+            self.assertIs(None, re.match(fitting_regex, ''.join(word)))
+
+
     def test_error_det(self):
         A = ssfsm.Machine(0)
         A[0]['ab'] = A[1]

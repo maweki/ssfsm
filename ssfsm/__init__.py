@@ -132,6 +132,38 @@ class FSM_Machine(object):
             return object.__setattr__(self, name, value)
         self[name] = value
 
+    @require_determinism
+    def __add__(self, other):
+        if not self().alphabet == other().alphabet:
+            raise ValueError("Alphabets are not equal")
+
+        init_other_set = frozenset((other.__initial_state.name,))
+        o_set = frozenset() if not self.__initial_state.accepting else init_other_set
+        init_state = (self.__initial_state.name, o_set)
+        queue = {init_state}
+
+        new_machine = FSM_Machine(init_state)
+        while queue:
+            this_state = queue.pop()
+            for a in self().alphabet:
+                if this_state in new_machine and a in new_machine[this_state]:
+                    continue
+                self_state, other_states = this_state
+                next_state_self = self[self_state][a].name
+                next_state_other = frozenset(other[s][a].name for s in other_states)
+                if self[next_state_self].accepting:
+                    next_state_other |= init_other_set
+                next_state = next_state_self, next_state_other
+                new_machine[this_state][(a,)] = new_machine[next_state]
+                queue.add(next_state)
+
+        for state in new_machine().states:
+            _, o = state.name
+            state.accepting = any(other[s].accepting for s in o)
+
+        return new_machine
+
+
     def __or__(self, other):
         from operator import or_
         return FSM_Machine.__cross_combine(self, other, or_)
