@@ -206,7 +206,7 @@ class FSM_Machine(object):
                 state.accepting = not state.accepting
             return new_machine
 
-    def __toDot(self):
+    def __toDot(self, compress_frozenset=True, wrapwidth=15):
         from collections import defaultdict
         statements = []
         statements += [ 'rankdir=LR' ]
@@ -216,7 +216,15 @@ class FSM_Machine(object):
         for node in nodes:
             # register nodes
             shape = 'doublecircle' if node.accepting else 'circle'
-            statements += [ '%d [ shape=%s ][ label="%s" ]' % (nodes[node], shape, str(node.name)) ]
+            node_name = str(node.name)
+            if compress_frozenset:
+                from re import sub
+                node_name = node_name.replace(str(frozenset()), '{}')
+                node_name = sub(r"frozenset\((.+?)\)", (lambda match: match.group(1)), node_name)
+            if wrapwidth:
+                from textwrap import wrap
+                node_name = "\\n".join(wrap(node_name, wrapwidth))
+            statements += [ '%d [ shape=%s ][ label="%s" ]' % (nodes[node], shape, node_name) ]
 
         for from_node in nodes:
             # build edges
