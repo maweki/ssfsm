@@ -162,6 +162,8 @@ class TestMachineOperators(TestCase):
         B[2]['ab'] = B[2]
 
         cat = B + B
+
+        self.assertTrue(len(cat) <= len(B) + 2**len(B))
         fitting_regex = r"^.*(aa)+.*(aa).*$"
 
         for word in self.all_words(B().alphabet, 10):
