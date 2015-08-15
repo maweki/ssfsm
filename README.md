@@ -262,7 +262,7 @@ Just run `nosetests` from within the project directory. The test-coverage (`nose
 ## Further Work
 In the future I want to do:
 * more tests
-* nondeterministic DFAs
+* nondeterministic FAs
 * a nice documentation
 * more decorators to control program flow
 * Minimization (removing unused states, reduce redundant states)
