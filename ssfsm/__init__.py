@@ -204,6 +204,75 @@ class FSM_Machine(object):
                 state.accepting = not state.accepting
             return new_machine
 
+    @require_determinism
+    def __get_equivalence_classes(self):
+        from itertools import combinations
+
+        #TODO use a more elegant algorithm, maybe using the equivalence classes
+
+        evidence = {}
+        for s1, s2 in combinations(self.__states.values(), 2):
+            evidence[(s1, s2)] = () if s1.accepting is not s2.accepting else None
+
+        todo = lambda : (k for k, v in evidence.items() if v is None)
+        order = lambda s1, s2: (s1, s2) if ((s1, s2) in evidence) else (s2, s1)
+
+        finished = False
+        while not finished:
+            finished = True
+            for s1, s2 in todo():
+                for a in self().alphabet:
+                    _s1, _s2 = order(s1[a], s2[a])
+                    e = None if _s1 is _s2 else evidence[(_s1, _s2)]
+                    if e is not None:
+                        evidence[(s1, s2)] = (a,) + e
+                        finished = False
+                        break
+
+        equivalence_classes = set()
+        for (s1, s2), e in evidence.items():
+            if e is None:
+                equivalence_classes.add(frozenset((s1, s2)))
+            else:
+                equivalence_classes.add(frozenset((s1,)))
+                equivalence_classes.add(frozenset((s2,)))
+
+        def transitive_equivalent(M):
+            # (e1, e2 in M1) and (e2, e3 in M2) -> M1 = M2
+            for M1, M2 in combinations(M, 2):
+                if M1 & M2:
+                    return transitive_equivalent(M - {M1, M2} | {M1 | M2})
+            return M
+
+        return transitive_equivalent(frozenset(equivalence_classes))
+
+    def __minimize(self):
+        from itertools import product
+
+        equivalence_classes = self.__get_equivalence_classes()
+        mapping = {}
+        for eq in equivalence_classes:
+            target = tuple(s.name for s in eq) if len(eq) > 1 else tuple(eq)[0].name
+            mapping.update((el, target) for el in eq)
+
+        orig_states = frozenset(self.__states.values())
+        for s, a in product(orig_states, self().alphabet):
+            _from = s
+            _to = _from[a]
+            self[mapping[_from]][(a,)] = self[mapping[_to]]
+
+        for s in orig_states:
+            self[mapping[s]] = s.accepting
+
+        self.__initial_state = self[mapping[self.__initial_state]]
+        self.__active_state = self[mapping[self.__active_state]]
+        self().remove_unreachable_states()
+
+    def __minimized_copy(self):
+        with self as copy:
+            copy.__minimize()
+            return copy
+
     def __toDot(self, compress_frozenset=True, wrapwidth=15):
         from collections import defaultdict
         statements = []
@@ -364,6 +433,13 @@ class FSM_Machine_Controller(object):
             suffix = () if state is accepting else state.path_to(accepting)
             return (prefix, state.path_to(state), suffix)
         return None
+
+    @property
+    def minimized(self):
+        return len(self.parent) == len(self.get_minimized())
+
+    def get_minimized(self):
+        return self.parent._FSM_Machine__minimized_copy()
 
     @property
     def finite_language(self):

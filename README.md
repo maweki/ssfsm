@@ -194,6 +194,16 @@ is a regular language.
 `Machine().remove_unreachable_states()` removes all states of the machine that
 are not reachable from the initial state.
 
+`Machine().minimized` is True if the machine is already minimized. This works by
+minimizing the DFA and comparing the number of states.
+
+`Machine().get_minimized()` returns a minimized copy of the DFA. It has neither
+unreachable nor redundant states and has the same language and alphabet as the original machine.
+If the original machine was in a specific state when it was minimized, the minimized
+copy will be in the same (or its equivalent) state. The states of the minimized DFA
+either have the same name as the states of the original or a tuple of the names
+of all states that specific state represents (equivalence class).
+
 `Machine().dot` is the string representing the machine as a dot-graph.
 
 **If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.

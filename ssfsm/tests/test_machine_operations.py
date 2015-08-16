@@ -209,3 +209,34 @@ class TestMachineOperators(TestCase):
 
         with self.assertRaises(ValueError):
             A + B
+
+    def test_minimization(self):
+        from itertools import takewhile
+
+        B = ssfsm.Machine(0) # B has aa
+        B[0]['a'] = B[1]
+        B[0]['b'] = B[0]
+        B[1]['a'] = B[2]
+        B[1]['b'] = B[0]
+        B[2] = True
+        B[2]['ab'] = B[2]
+
+        C = B + B + B + B
+        C_ = C().get_minimized()
+
+        self.assertTrue(len(C_) <= len(C))
+        self.assertTrue(C_().minimized)
+        self.assertEqual(C().alphabet, C_().alphabet)
+
+        # languages are equal
+        for w1, w2 in takewhile(lambda x: len(x[0]) < 16, zip(C().language, C_().language)):
+            self.assertEqual(w1, w2)
+
+        # state is retained
+        for word in all_words(B().alphabet, 12):
+            C().reset()
+            C(word)
+            C_ = C().get_minimized()
+            n1, n2 = C().state.name, C_().state.name
+            self.assertTrue((n1 == n2) or (n1 in n2), "Unequivalent states for {}, {} <-> {}".format(word, n1, n2))
+            self.assertIs(bool(C), bool(C_))
