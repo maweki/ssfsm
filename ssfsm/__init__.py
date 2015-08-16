@@ -60,13 +60,11 @@ class FSM_Machine(object):
         copy().alphabet = self.__alphabet
         for key in self.__states:
             copy[key] = self.__states[key].accepting
-            if self.__initial_state is self.__states[key]:
-                copy().reset(copy[key])
-            if self.__active_state is self.__states[key]:
-                copy().state = copy[key]
         for key in self.__states:
             for transition in self.__states[key].transitions:
                 copy[key][(transition,)] = copy[self.__states[key][transition].name]
+        copy().reset(copy[self.__initial_state.name])
+        copy().state = copy[self.__active_state.name]
         return copy
 
     def __deepcopy__(self, _):

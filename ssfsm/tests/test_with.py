@@ -57,3 +57,16 @@ class TestWith(TestCase):
         m().reset(m.One)
         with m as m_:
             self.assertEqual(m().alphabet, m_().alphabet)
+
+    def test_bug_state_not_retained(self):
+        A = ssfsm.Machine(0) # A ends with b
+        A[0]['b'] = A[1]
+        A[0]['a'] = A[0]
+        A[1]['b'] = A[1]
+        A[1]['a'] = A[0]
+        A[1] = True
+
+        A = A+A
+        A('b')
+        with A as A_:
+            self.assertEqual(A().state.name, A_().state.name)
