@@ -21,11 +21,14 @@ class TestMachineOperators(TestCase):
         m.S1 = True
 
         neg = ~m # odd number of 0s
-            with m as copy_m, neg as copy_neg:
+        m_ = ~neg
         for word in all_words(m().alphabet, 10):
+            with m as copy_m, neg as copy_neg, m_ as copy_m_:
                 copy_m(word)
+                copy_m_(word)
                 copy_neg(word)
                 self.assertIsNot(bool(copy_m), bool(copy_neg))
+                self.assertIs(bool(copy_m), bool(copy_m_))
                 check = 0 == ((len(word) - sum(word)) % 2)
                 self.assertIs(bool(copy_m), bool(check))
 
