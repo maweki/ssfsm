@@ -1,4 +1,5 @@
 from unittest import TestCase
+from common import all_words
 
 import ssfsm
 
@@ -8,13 +9,6 @@ class TestMachineOperators(TestCase):
     def setUp(self):
         m = ssfsm.Machine()
         self.m = m
-
-    @staticmethod
-    def all_words(alphabet, upto):
-        from itertools import product
-        for length in range(upto + 1):
-            for word in product(alphabet, repeat=length):
-                yield word
 
     def test_negate(self):
         # finite-state machine that determines whether a binary number has an even number of 0s (wikipedia example)
@@ -27,8 +21,8 @@ class TestMachineOperators(TestCase):
         m.S1 = True
 
         neg = ~m # odd number of 0s
-        for word in self.all_words(m().alphabet, 10):
             with m as copy_m, neg as copy_neg:
+        for word in all_words(m().alphabet, 10):
                 copy_m(word)
                 copy_neg(word)
                 self.assertIsNot(bool(copy_m), bool(copy_neg))
@@ -69,7 +63,7 @@ class TestMachineOperators(TestCase):
 
         from itertools import product
 
-        for word in self.all_words(A().alphabet, 10):
+        for word in all_words(A().alphabet, 10):
             print(word)
             with A as copy_A, B as copy_B, union as copy_union:
                 copy_A(word)
@@ -166,7 +160,7 @@ class TestMachineOperators(TestCase):
         self.assertTrue(len(cat) <= len(B) + 2**len(B))
         fitting_regex = r"^.*(aa)+.*(aa).*$"
 
-        for word in self.all_words(B().alphabet, 10):
+        for word in all_words(B().alphabet, 10):
             with cat as cat_copy:
                 cat_copy(word)
                 self.assertEqual(bool(cat_copy),bool(re.match(fitting_regex, ''.join(word))))
