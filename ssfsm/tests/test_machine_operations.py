@@ -215,6 +215,11 @@ class TestMachineOperators(TestCase):
 
     def test_minimization(self):
         from itertools import takewhile
+        try:
+            from itertools import izip
+            _zip = izip
+        except:
+            _zip = zip
 
         B = ssfsm.Machine(0) # B has aa
         B[0]['a'] = B[1]
@@ -232,7 +237,7 @@ class TestMachineOperators(TestCase):
         self.assertEqual(C().alphabet, C_().alphabet)
 
         # languages are equal
-        for w1, w2 in takewhile(lambda x: len(x[0]) < 16, zip(C().language, C_().language)):
+        for w1, w2 in takewhile(lambda x: len(x[0]) < 16, _zip(C().language, C_().language)):
             self.assertEqual(w1, w2)
 
         # state is retained
