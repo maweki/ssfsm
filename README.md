@@ -19,7 +19,7 @@ in the tests-directory but here are a few ideas on how the library works:
 ```
 # A DFA that accepts b*a(ab)*
 import ssfsm
-A = ssfsm.Machine()
+A = ssfsm.DFA()
 A.One['a'] = A.Two
 A.One['b'] = A.One
 A.Two['ab'] = A.Two # a and b transition
@@ -31,9 +31,9 @@ You can also create an initial state with the constructor like `A = ssfsm.Machin
 
 States can be deleted with the **del** statement
 ```
-A().states # frozenset({<ssfsm.FSM_State object>, <ssfsm.FSM_State object>})
+A().states # frozenset({<ssfsm.DFA_State object>, <ssfsm.DFA_State object>})
 del A.Two
-A().states # frozenset({<ssfsm.FSM_State object>})
+A().states # frozenset({<ssfsm.DFA_State object>})
 ```
 Their transitions (and the transitions leading to them) will be removed as well.
 
@@ -61,7 +61,7 @@ else:
 Constructing DFAs, even with a nice syntax, can be tedious. So here is
 polyfill:
 ```
-A = ssfsm.Machine()
+A = ssfsm.DFA()
 A.One['a'] = A.Two
 A().alphabet = 'ab'
 A().polyfill() # all remaining transitions are filled, to stay in the same state
@@ -75,7 +75,7 @@ is not neccessary. But for polyfill-usage, you can set an alphabet. This
 also deletes transitions that are not part of the alphabet.
 
 ```
-A = ssfsm.Machine()
+A = ssfsm.DFA()
 A.One['c'] = A.Two
 A.One.transitions # frozenset({'c'})
 A().alphabet = 'ab'
@@ -87,7 +87,7 @@ If you've painstakenly created a DFA and want to use it but, after usage,
 want to return to a previous state, you can use the **with** statement.
 
 ```
-A = ssfsm.Machine()
+A = ssfsm.DFA()
 # create all states and transitions
 with A as A_copy:
   A_copy('a') # a-transition only in A_copy
@@ -104,7 +104,7 @@ You can add decorators to functions so that with each function call,
 a transition in the machine is executed.
 
 ```
-A = ssfsm.Machine()
+A = ssfsm.DFA()
 # create all states and transitions
 
 @ssfsm.emmit(A, 'a')
@@ -206,7 +206,7 @@ of all states that specific state represents (equivalence class).
 
 `Machine().dot` is the string representing the machine as a dot-graph.
 
-**If you don't like the `Machine()`-syntax** to access the FSM, you can use the alternate syntax `Machine._.alphabet` and so on.
+**If you don't like the `Machine()`-syntax** to access the DFA, you can use the alternate syntax `Machine._.alphabet` and so on.
 
 ### Information about states
 
@@ -242,7 +242,7 @@ accessed via the dot-operator.
 A state is created when it is first accessed. Therefore a plain
 statement can have observable side-effects.
 ```
-A = ssfsm.Machine()
+A = ssfsm.DFA()
 'foo' in A # False
 A.foo # plain expression with side-effects
 'foo' in A # True

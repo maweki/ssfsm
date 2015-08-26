@@ -17,7 +17,7 @@ class TestWith(TestCase):
         from copy import deepcopy
         copy = deepcopy(self.m)
         self.assertIsNot(self.m, copy)
-        self.assertIsInstance(copy, ssfsm.FSM_Machine)
+        self.assertIsInstance(copy, ssfsm.DFA_Machine)
         for state in self.m().states:
             self.assertIn(state.name, copy)
         for state in copy().states:

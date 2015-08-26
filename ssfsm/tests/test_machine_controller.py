@@ -15,7 +15,7 @@ class TestMachineController(TestCase):
         state = self.m.TestState
         self.assertIn('TestState', self.m().states_names)
         self.assertIn(state, self.m().states)
-        self.assertIsInstance(state, ssfsm.FSM_State)
+        self.assertIsInstance(state, ssfsm.DFA_State)
 
     def test_controller_calling(self):
         m = self.m

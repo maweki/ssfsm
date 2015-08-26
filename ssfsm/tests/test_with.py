@@ -22,7 +22,7 @@ class TestWith(TestCase):
         m = self.m
         with m as copy:
             self.assertIsNot(m, copy)
-            self.assertIsInstance(copy, ssfsm.FSM_Machine)
+            self.assertIsInstance(copy, ssfsm.DFA_Machine)
             for state in m().states:
                 self.assertIn(state.name, copy)
             for state in copy().states:

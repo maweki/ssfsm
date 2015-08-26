@@ -3,12 +3,12 @@ def require_determinism(func):
     @wraps(func)
     def wrapper(*args):
         for arg in args:
-            if (isinstance(arg, FSM_Machine) and not arg().deterministic) or (isinstance(arg, FSM_Machine_Controller) and not arg.deterministic):
+            if (isinstance(arg, DFA_Machine) and not arg().deterministic) or (isinstance(arg, DFA_Machine_Controller) and not arg.deterministic):
                 raise ValueError("One or all Machines are not deterministic")
         return func(*args)
     return wrapper
 
-class FSM_Machine(object):
+class DFA_Machine(object):
     """The machine"""
 
     __states = None
@@ -43,12 +43,12 @@ class FSM_Machine(object):
     def __create_state(self, name):
         if name in self:
             raise ValueError("State allready created")
-        new_state = FSM_State(self, name)
+        new_state = DFA_State(self, name)
         self.__states[name] = new_state
         return new_state
 
     def __deepcopy(self):
-        copy = FSM_Machine()
+        copy = DFA_Machine()
         copy().alphabet = self.__alphabet
         for key in self.__states:
             copy[key] = self.__states[key].accepting
@@ -73,7 +73,7 @@ class FSM_Machine(object):
 
     def __call__(self, transition=None):
         if transition is None:
-            return FSM_Machine_Controller(self)
+            return DFA_Machine_Controller(self)
 
         try:
             for t in transition:
@@ -132,7 +132,7 @@ class FSM_Machine(object):
         init_state = (self.__initial_state.name, o_set)
         queue = {init_state}
 
-        new_machine = FSM_Machine(init_state)
+        new_machine = DFA_Machine(init_state)
         while queue:
             this_state = queue.pop()
             for a in self().alphabet:
@@ -156,18 +156,18 @@ class FSM_Machine(object):
 
     def __or__(self, other):
         from operator import or_
-        return FSM_Machine.__cross_combine(self, other, or_)
+        return DFA_Machine.__cross_combine(self, other, or_)
 
     def __and__(self, other):
         from operator import and_
-        return FSM_Machine.__cross_combine(self, other, and_)
+        return DFA_Machine.__cross_combine(self, other, and_)
 
     def __sub__(self, other):
-        return FSM_Machine.__cross_combine(self, other, lambda a, b: a and not b)
+        return DFA_Machine.__cross_combine(self, other, lambda a, b: a and not b)
 
     def __xor__(self, other):
         from operator import xor
-        return FSM_Machine.__cross_combine(self, other, xor)
+        return DFA_Machine.__cross_combine(self, other, xor)
 
     @staticmethod
     @require_determinism
@@ -176,7 +176,7 @@ class FSM_Machine(object):
             raise ValueError("Alphabets are not equal")
 
         from itertools import product
-        new_machine = FSM_Machine()
+        new_machine = DFA_Machine()
 
         for f, s in product(first().states, second().states):
             # @TODO Improvement: do that constructively
@@ -301,7 +301,7 @@ class FSM_Machine(object):
         graph = 'digraph { stmt_list }'.replace('stmt_list', ';\n'.join(statements))
         return graph
 
-class FSM_Machine_Controller(object):
+class DFA_Machine_Controller(object):
     def __init__(self, parent):
         self.__parent = parent
 
@@ -319,7 +319,7 @@ class FSM_Machine_Controller(object):
 
     @property
     def states(self):
-        return frozenset(self.parent._FSM_Machine__states.values())
+        return frozenset(self.parent._DFA_Machine__states.values())
 
     @property
     def states_names(self):
@@ -327,11 +327,11 @@ class FSM_Machine_Controller(object):
 
     @property
     def state(self):
-        return self.parent._FSM_Machine__active_state
+        return self.parent._DFA_Machine__active_state
 
     @state.setter
     def state(self, state):
-        self.parent._FSM_Machine__change_state(state)
+        self.parent._DFA_Machine__change_state(state)
 
     @property
     def deterministic(self):
@@ -340,15 +340,15 @@ class FSM_Machine_Controller(object):
 
     @property
     def initial_state(self):
-        return self.parent._FSM_Machine__initial_state
+        return self.parent._DFA_Machine__initial_state
 
     @initial_state.setter
     def initial_state(self, state):
-        if not isinstance(state, FSM_State):
+        if not isinstance(state, DFA_State):
             raise TypeError("Transition target must be a state")
 
         if state.parent is self.__parent:
-            self.parent._FSM_Machine__initial_state = state
+            self.parent._DFA_Machine__initial_state = state
         else:
             raise ValueError("States are not in the same machine")
 
@@ -365,11 +365,11 @@ class FSM_Machine_Controller(object):
 
     @property
     def dot(self):
-        return self.parent._FSM_Machine__toDot()
+        return self.parent._DFA_Machine__toDot()
 
     def reset(self, initial_state=None):
         if initial_state is None:
-            self.parent._FSM_Machine__change_state(self.initial_state)
+            self.parent._DFA_Machine__change_state(self.initial_state)
         else:
             if initial_state.parent is self.parent:
                 self.initial_state = initial_state
@@ -379,7 +379,7 @@ class FSM_Machine_Controller(object):
 
     @property
     def alphabet(self):
-        s = self.parent._FSM_Machine__alphabet
+        s = self.parent._DFA_Machine__alphabet
         for state in self.states:
             s = s | state.transitions
         return s
@@ -387,7 +387,7 @@ class FSM_Machine_Controller(object):
     @alphabet.setter
     def alphabet(self, val):
         to_delete = self.alphabet - frozenset(val)
-        self.parent._FSM_Machine__alphabet = frozenset(val)
+        self.parent._DFA_Machine__alphabet = frozenset(val)
         for state in self.states:
             for d in to_delete:
                 if d in state:
@@ -431,7 +431,7 @@ class FSM_Machine_Controller(object):
         return len(self.parent) == len(self.get_minimized())
 
     def get_minimized(self):
-        return self.parent._FSM_Machine__minimized_copy()
+        return self.parent._DFA_Machine__minimized_copy()
 
     @property
     def finite_language(self):
@@ -473,7 +473,7 @@ class FSM_Machine_Controller(object):
                     else:
                         state[(transition,)] = target
 
-class FSM_State(object):
+class DFA_State(object):
     """State of a finite state machine"""
     def __init__(self, parent, name):
         self.__parent = parent
@@ -548,7 +548,7 @@ class FSM_State(object):
         return '<state.%s>' % self.name
 
     def __setitem__(self, key, value):
-        if not isinstance(value, FSM_State):
+        if not isinstance(value, DFA_State):
             raise TypeError("Transition target must be a state")
         elif not value.parent is self.parent:
             raise ValueError("States are not in the same machine")
