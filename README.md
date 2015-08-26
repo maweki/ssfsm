@@ -1,6 +1,6 @@
 # ssfsm - Stupidly Simple Finite State Machines
 
-ssfsm is a constructive library implementing deterministic finite state machines
+ssfsm is a constructive library implementing finite state machines
 (currently only deterministic finite automaton - DFAs).
 The fun thing is, that it has a stupidly simple API.
 
@@ -275,7 +275,6 @@ In the future I want to do:
 * nondeterministic FAs
 * a nice documentation
 * more decorators to control program flow
-* Minimization (removing unused states, reduce redundant states)
 * other finite state machines than DFAs
 
 ## License
