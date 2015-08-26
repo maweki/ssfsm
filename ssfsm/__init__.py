@@ -13,3 +13,6 @@ emmit_before = dfa.emmit_before
 def Machine(*nargs, **kwargs):
     """Returns a new :py:class:`DFA_Machine`"""
     return DFA_Machine(*nargs, **kwargs)
+
+def DFA(*nargs, **kwargs):
+    return DFA_Machine(*nargs, **kwargs)
