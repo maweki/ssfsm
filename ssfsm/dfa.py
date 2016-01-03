@@ -298,7 +298,7 @@ class DFA_Machine(object):
             if from_node is self.__initial_state:
                 statements += [ '0 -> %d' % nodes[from_node] ]
 
-        graph = 'digraph { stmt_list }'.replace('stmt_list', ';\n'.join(statements))
+            graph = 'digraph ID { stmt_list }'.replace('ID', str(id(self))).replace('stmt_list', ';\n'.join(statements))
         return graph
 
 class DFA_Machine_Controller(object):
