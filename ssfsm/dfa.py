@@ -355,7 +355,7 @@ class DFA_Machine_Controller(object):
     @property
     def reachable_states(self):
         if (self.initial_state in self.states):
-            return self.initial_state.reachable
+            return self.initial_state.reachable | frozenset((self.initial_state,))
         else:
             return frozenset()
 
